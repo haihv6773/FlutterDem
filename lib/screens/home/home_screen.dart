@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dem/dummy.dart';
 import 'package:flutter_dem/screens/detail/detail_screen.dart';
+import 'package:flutter_dem/screens/widget/app_image.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key, required this.title});
@@ -24,7 +26,7 @@ class _HomeScreenState extends State<HomeScreen> {
           const SliverPersistentHeader(
             delegate: HomeHeaderDelegate(
                 height: 40,
-                headerTitle: 'Games on Tevi',
+                headerTitle: 'Games on Creator',
                 showRightButton: true),
           ),
           _buildSliverGameList(),
@@ -43,21 +45,15 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _buildSliverGameList() {
     return SliverToBoxAdapter(
-      child: Container(
-        height: 120,
-        child: ListView(
+      child: SizedBox(
+        height: 140,
+        child: ListView.builder(
           scrollDirection: Axis.horizontal,
           padding: const EdgeInsets.symmetric(horizontal: 10.0),
-          children: [
-            _buildGameItem('assets/images/game1.jpg', 'Lucky Fruits'),
-            const SizedBox(width: 10),
-            _buildGameItem('assets/images/game2.jpg', 'Fruits Merge'),
-            const SizedBox(width: 10),
-            _buildGameItem('assets/images/game3.jpg', 'Candy Crush'),
-            const SizedBox(width: 10),
-            _buildGameItem(
-                'assets/images/game4.jpg', 'Business Tour Business Tour'),
-          ],
+          itemBuilder: (_, index) => _buildGameItem(
+              kPeopleImages[index % kPeopleImages.length],
+              kPeopleName[index % kPeopleImages.length]),
+          itemCount: 10,
         ),
       ),
     );
@@ -68,21 +64,13 @@ class _HomeScreenState extends State<HomeScreen> {
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 3,
       ),
-      delegate: SliverChildListDelegate(
-        [
-          _buildGridItem(
-              context, 'assets/images/game1.jpg', 'MaiQuinn', '@MAIQUINNVNLE'),
-          _buildGridItem(context, 'assets/images/game2.jpg', 'Host Nguyen',
-              '@hostnguyenkhang'),
-          _buildGridItem(
-              context, 'assets/images/game3.jpg', 'Thieu Rino', '@ThieuRino'),
-          _buildGridItem(
-              context, 'assets/images/game4.jpg', 'Firefly', '@firefly'),
-          _buildGridItem(
-              context, 'assets/images/game5.jpg', 'Stelle', '@stelle'),
-          _buildGridItem(context, 'assets/images/game1.jpg',
-              'Aventurine Tempozjxhc', '@aventurine'),
-        ],
+      delegate: SliverChildBuilderDelegate(
+        (context, index) => _buildGridItem(
+            context,
+            kPeopleImages[index % kPeopleImages.length],
+            'Host Nguyen',
+            '@hostnguyenkhang'),
+        childCount: 9,
       ),
     );
   }
@@ -107,15 +95,21 @@ class _HomeScreenState extends State<HomeScreen> {
       color: Colors.white,
       height: 120.0,
       width: 100.0,
+      margin: const EdgeInsets.all(4),
       child: Column(
         children: [
           ClipRRect(
             borderRadius: BorderRadius.circular(10),
-            child: Image(
-              image: AssetImage(imagePath),
+            child: AppImage(
+              url: imagePath,
               width: 100,
               height: 100,
             ),
+            // Image(
+            //   image: AssetImage(imagePath),
+            //   width: 100,
+            //   height: 100,
+            // ),
           ),
           const SizedBox(height: 5),
           Expanded(
@@ -149,11 +143,16 @@ class _HomeScreenState extends State<HomeScreen> {
             children: [
               ClipRRect(
                 borderRadius: BorderRadius.circular(40),
-                child: Image(
-                  image: AssetImage(imagePath),
+                child: AppImage(
+                  url: imagePath,
                   width: 80,
                   height: 80,
                 ),
+                // Image(
+                //   image: AssetImage(imagePath),
+                //   width: 80,
+                //   height: 80,
+                // ),
               ),
               const SizedBox(height: 5),
               SizedBox(

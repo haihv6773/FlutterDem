@@ -1,9 +1,10 @@
-import "package:flutter/cupertino.dart";
 import "package:flutter/material.dart";
 import "package:flutter/widgets.dart";
-import "package:flutter_dem/screens/detail/my_post_widget.dart";
 import "package:flutter_dem/domain/entity/post_model.dart";
+import "package:flutter_dem/dummy.dart";
+import "package:flutter_dem/screens/detail/my_post_widget.dart";
 import "package:flutter_dem/screens/home/home_screen.dart";
+import "package:flutter_dem/screens/widget/app_image.dart";
 
 class DetailScreen extends StatefulWidget {
   const DetailScreen({super.key});
@@ -18,8 +19,8 @@ class _DetailScreenState extends State<DetailScreen>
 
   late List<PostModel> _posts;
 
-  final String _userName = 'Firefly';
-  final String _userImagePath = 'assets/images/game3.jpg';
+  final String _userName = 'Emily';
+  final String _userImagePath = kPeopleImages[2];
 
   @override
   void initState() {
@@ -34,86 +35,167 @@ class _DetailScreenState extends State<DetailScreen>
     super.dispose();
   }
 
-  @override
-  Widget build(BuildContext context) {
+  Widget _buildBody(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFDADADA),
-      body: Stack(
-        children: [
-          CustomScrollView(
-            slivers: <Widget>[
-              _buildTopContainer(_userImagePath),
-              SliverToBoxAdapter(
-                child: Container(
-                  color: Colors.white,
-                  height: 400 * _posts.length.toDouble(),
-                  child: Column(
-                    children: [
-                      TabBar(
-                        controller: _tabController,
-                        isScrollable: false,
-                        dividerColor: Colors.black,
-                        labelColor: Colors.black,
-                        unselectedLabelColor: Colors.grey,
-                        indicatorWeight: 3,
-                        tabs: const <Widget>[
-                          Tab(text: 'Posts'),
-                          Tab(text: 'About'),
-                        ],
-                      ),
-                      const SizedBox(height: 20),
-                      Expanded(
-                        child: TabBarView(
-                          controller: _tabController,
-                          children: <Widget>[
-                            MyPostsWidget(
-                              _posts,
-                            ),
-                            const Center(
-                              child: Text('Placeholder of the About tab'),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
+      body: NestedScrollView(
+        headerSliverBuilder: (context, innerBoxIsScrolled) => [
+          _buildTopContainer(_userImagePath),
+          SliverOverlapAbsorber(
+            handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+            sliver: SliverAppBar(
+              bottom: TabBar(
+                controller: _tabController,
+                isScrollable: false,
+                dividerColor: Colors.black,
+                labelColor: Colors.black,
+                unselectedLabelColor: Colors.grey,
+                indicatorWeight: 3,
+                tabs: const <Widget>[
+                  Tab(text: 'Posts'),
+                  Tab(text: 'About'),
+                ],
+              ),
+              floating: true,
+              backgroundColor: Colors.white,
+              pinned: true,
+              snap: false,
+              expandedHeight: 40,
+              forceElevated: innerBoxIsScrolled,
+            ),
+          ),
+        ],
+        body: TabBarView(
+          controller: _tabController,
+          children: <Widget>[
+            _wrapWithBuilder(
+              "myPost",
+              SliverList.builder(
+                itemBuilder: (_, index) => _buildPostItem(
+                  _userName,
+                  _userImagePath,
+                  "Today",
+                  kPostImages[index % kPostImages.length],
+                  "Haha",
+                  index == 0,
+                  index % 3 == 0,
                 ),
               ),
-              _buildBottomGradientFooter(),
-            ],
-          ),
-          _buildTopBar(context, 100),
-        ],
+            ),
+            _wrapWithBuilder(
+              "About",
+              const SliverToBoxAdapter(
+                child: Center(
+                  child: Text('Placeholder of the About tab'),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
 
-  Widget _buildTopContainer(String imagePath) {
-    return SliverList(
-      delegate: SliverChildListDelegate(
-        [
-          Container(
-            width: double.infinity,
-            height: 350,
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                colors: [Color(0xFFDADADA), Colors.white],
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-              ),
-              color: Colors.grey,
-              borderRadius: BorderRadius.zero,
+  Widget _wrapWithBuilder(String keyName, Widget child) {
+    return SafeArea(
+      bottom: false,
+      top: false,
+      child: Builder(builder: (context) {
+        return CustomScrollView(
+          key: PageStorageKey<String>(keyName),
+          slivers: [
+            SliverOverlapInjector(
+              handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
             ),
-            child: Align(
-              alignment: Alignment.bottomCenter,
-              child: Container(
-                height: 250,
-                color: Colors.transparent,
-                child: _buildUserInfo(imagePath),
-              ),
+            SliverPadding(
+              padding: const EdgeInsets.all(6),
+              sliver: child,
+            ),
+          ],
+        );
+      }),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return _buildBody(context);
+    // return Scaffold(
+    //   backgroundColor: const Color(0xFFDADADA),
+    //   body: Stack(
+    //     children: [
+    //       CustomScrollView(
+    //         slivers: <Widget>[
+    //           _buildTopContainer(_userImagePath),
+
+    //           SliverToBoxAdapter(
+    //             child: Container(
+    //               color: Colors.white,
+    //               height: 100,
+    //               child: Column(
+    //                 children: [
+    //                   TabBar(
+    //                     controller: _tabController,
+    //                     isScrollable: false,
+    //                     dividerColor: Colors.black,
+    //                     labelColor: Colors.black,
+    //                     unselectedLabelColor: Colors.grey,
+    //                     indicatorWeight: 3,
+    //                     tabs: const <Widget>[
+    //                       Tab(text: 'Posts'),
+    //                       Tab(text: 'About'),
+    //                     ],
+    //                   ),
+    //                   const SizedBox(height: 20),
+    //                 ],
+    //               ),
+    //             ),
+    //           ),
+    //           SliverFillRemaining(
+    //             child: TabBarView(
+    //               controller: _tabController,
+    //               children: <Widget>[
+    //                 MyPostsWidget(
+    //                   posts: _posts,
+    //                 ),
+    //                 const Center(
+    //                   child: Text('Placeholder of the About tab'),
+    //                 ),
+    //               ],
+    //             ),
+    //           )
+    //           // _buildBottomGradientFooter(),
+    //         ],
+    //       ),
+    //       _buildTopBar(context, 100),
+    //     ],
+    //   ),
+    // );
+  }
+
+  Widget _buildTopContainer(String imagePath) {
+    return SliverToBoxAdapter(
+      child: SafeArea(
+        child: Container(
+          width: double.infinity,
+          padding: const EdgeInsets.only(top: 60),
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Color(0xFFDADADA), Colors.white],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+            ),
+            color: Colors.grey,
+            borderRadius: BorderRadius.zero,
+          ),
+          child: Align(
+            alignment: Alignment.bottomCenter,
+            child: Container(
+              // height: 250,
+              color: Colors.transparent,
+              child: _buildUserInfo(imagePath),
             ),
           ),
-        ],
+        ),
       ),
     );
   }
@@ -136,10 +218,10 @@ class _DetailScreenState extends State<DetailScreen>
           ),
           child: ClipRRect(
             borderRadius: BorderRadius.circular(50),
-            child: Image(
-              image: AssetImage(imagePath),
-              width: 80,
-              height: 80,
+            child: AppImage(
+              url: kPeopleImages[0],
+              width: 100,
+              height: 100,
             ),
           ),
         ),
@@ -172,7 +254,7 @@ class _DetailScreenState extends State<DetailScreen>
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Text(
-          userName,
+          _userName,
           style: const TextStyle(
             color: Colors.black,
             fontSize: 20,
@@ -352,6 +434,143 @@ class _DetailScreenState extends State<DetailScreen>
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildPostItem(
+    String userName,
+    String userImagePath,
+    String postDate,
+    String postImagePath,
+    String postContent,
+    bool isPinned,
+    bool onlyForFollower,
+  ) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 10),
+      child: Column(
+        children: [
+          Visibility(
+            visible: isPinned,
+            child: const Row(
+              children: [
+                Text(
+                  'Pinned',
+                  style: TextStyle(color: Colors.black54, fontSize: 14),
+                ),
+                SizedBox(width: 3),
+                Icon(Icons.push_pin, color: Colors.black54, size: 16),
+              ],
+            ),
+          ),
+          const SizedBox(height: 5),
+          _buildPostInfoUser(userName, userImagePath, postDate),
+          const SizedBox(height: 5),
+          _buildPostBody(postContent, postImagePath, onlyForFollower),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildPostInfoUser(
+      String userName, String userImagePath, String postDate) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        ClipRRect(
+            borderRadius: BorderRadius.circular(25),
+            child: AppImage(
+              url: userImagePath,
+              width: 50,
+              height: 50,
+            )),
+        const SizedBox(width: 8),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Row(
+              children: [
+                Text(
+                  userName,
+                  style: const TextStyle(
+                      color: Colors.black,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600),
+                ),
+                const SizedBox(width: 3),
+                const Icon(Icons.verified, color: Color(0xFF3400B1), size: 14),
+              ],
+            ),
+            Row(
+              children: [
+                Text(
+                  '$postDate · ',
+                  style: const TextStyle(color: Colors.black, fontSize: 14),
+                ),
+                const Icon(
+                  Icons.people_outline,
+                  color: Colors.black54,
+                  size: 18,
+                ),
+              ],
+            ),
+          ],
+        ),
+        const Expanded(child: SizedBox()),
+        const Icon(Icons.more_vert, color: Colors.black, size: 22),
+      ],
+    );
+  }
+
+  Widget _buildPostBody(
+    String content,
+    String imagePath,
+    bool onlyForFollower,
+  ) {
+    return Row(
+      children: [
+        const SizedBox(width: 58),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                content,
+                style: const TextStyle(
+                    color: Colors.black,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w400),
+              ),
+              const SizedBox(height: 10),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(10),
+                child: AppImage(
+                  url: imagePath,
+                  height: 150,
+                  needSub: onlyForFollower,
+                ),
+              ),
+              const SizedBox(height: 10),
+              const Row(
+                children: [
+                  Icon(Icons.star_outline, color: Colors.black, size: 26),
+                  SizedBox(width: 10),
+                  Icon(Icons.chat_bubble_outline,
+                      color: Colors.black, size: 22),
+                  SizedBox(width: 10),
+                  Icon(Icons.bookmark_outline, color: Colors.black, size: 24),
+                  SizedBox(width: 10),
+                  Icon(Icons.share_outlined, color: Colors.black, size: 24),
+                  SizedBox(width: 10),
+                  Icon(Icons.card_giftcard_outlined,
+                      color: Colors.black, size: 24),
+                ],
+              )
+            ],
+          ),
+        ),
+      ],
     );
   }
 }

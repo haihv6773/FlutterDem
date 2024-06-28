@@ -4,10 +4,7 @@ import 'package:flutter_dem/domain/entity/post_model.dart';
 class MyPostsWidget extends StatefulWidget {
   final List<PostModel> posts;
 
-  const MyPostsWidget(
-    // Key? key,
-    this.posts,
-  );
+  const MyPostsWidget({required this.posts, super.key});
 
   @override
   State<MyPostsWidget> createState() => _MyPostsWidgetState();
