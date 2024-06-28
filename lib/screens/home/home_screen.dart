@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_dem/detail/detail_screen.dart';
+import 'package:flutter_dem/screens/detail/detail_screen.dart';
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key, required this.title});
 
   final String title;
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -148,7 +148,7 @@ class _MyHomePageState extends State<MyHomePage> {
           child: Column(
             children: [
               ClipRRect(
-                borderRadius: BorderRadius.circular(50),
+                borderRadius: BorderRadius.circular(40),
                 child: Image(
                   image: AssetImage(imagePath),
                   width: 80,
@@ -267,7 +267,7 @@ class HomeHeaderDelegate extends SliverPersistentHeaderDelegate {
 
   @override
   bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) {
-    return false;
+    return true;
   }
 }
 
@@ -300,7 +300,7 @@ class AppBarHeaderDelegate extends SliverPersistentHeaderDelegate {
                   ),
                 ),
               ),
-              _buildStarsWidget(10),
+              buildStarsCount(10),
             ]),
             Text(
               headerTitle,
@@ -381,7 +381,8 @@ class AppBarHeaderDelegate extends SliverPersistentHeaderDelegate {
   }
 }
 
-Widget _buildStarsWidget(int stars) {
+Widget buildStarsCount(int stars,
+    {Color backgroundColor = const Color(0xFFE9E9E9)}) {
   return Stack(
     clipBehavior: Clip.none,
     alignment: Alignment.centerRight,
@@ -389,13 +390,12 @@ Widget _buildStarsWidget(int stars) {
       Container(
         height: 30,
         decoration: BoxDecoration(
-          color: const Color(0xFFE9E9E9),
-          borderRadius: BorderRadius.circular(15), // Add border radius here
-          border:
-              Border.all(color: Colors.transparent), // Add border color here
+          color: backgroundColor,
+          borderRadius: BorderRadius.circular(15),
+          border: Border.all(color: Colors.transparent),
         ),
         child: Padding(
-          padding: const EdgeInsets.only(right: 12),
+          padding: const EdgeInsets.only(right: 15),
           child: Row(
             children: [
               const Icon(

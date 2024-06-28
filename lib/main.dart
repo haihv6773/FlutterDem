@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_dem/home/my_home_page.dart';
+import 'package:flutter_dem/screens/home/home_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.white),
         useMaterial3: false,
       ),
-      home: const MyHomePage(title: 'tevi'),
+      home: const HomeScreen(title: 'tevi'),
     );
   }
 }
