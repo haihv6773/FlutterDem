@@ -4,6 +4,7 @@ import "package:flutter_dem/domain/entity/post_model.dart";
 import "package:flutter_dem/dummy.dart";
 import "package:flutter_dem/screens/detail/my_post_widget.dart";
 import "package:flutter_dem/screens/home/home_screen.dart";
+import "package:flutter_dem/screens/wallet/wallet_screen.dart";
 import "package:flutter_dem/screens/widget/app_image.dart";
 
 class DetailScreen extends StatefulWidget {
@@ -543,12 +544,19 @@ class _DetailScreenState extends State<DetailScreen>
                     fontWeight: FontWeight.w400),
               ),
               const SizedBox(height: 10),
-              ClipRRect(
-                borderRadius: BorderRadius.circular(10),
-                child: AppImage(
-                  url: imagePath,
-                  height: 150,
-                  needSub: onlyForFollower,
+              InkWell(
+                onTap: () {
+                  if (onlyForFollower) {
+                    openWalletScreen(context);
+                  }
+                },
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(10),
+                  child: AppImage(
+                    url: imagePath,
+                    height: 150,
+                    needSub: onlyForFollower,
+                  ),
                 ),
               ),
               const SizedBox(height: 10),
@@ -573,4 +581,12 @@ class _DetailScreenState extends State<DetailScreen>
       ],
     );
   }
+}
+
+Future openWalletScreen(BuildContext context) {
+  return Navigator.of(context).push(
+    MaterialPageRoute(
+      builder: (context) => const WalletScreen(),
+    ),
+  );
 }
